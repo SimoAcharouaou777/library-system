@@ -1,0 +1,17 @@
+{
+    "name": "youcode/library-systeme",
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/"
+        }
+    },
+    "authors": [
+        {
+            "name": "SimoAcharouaou777",
+            "email": "acharouaoumohamed@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
