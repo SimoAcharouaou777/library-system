@@ -1,9 +1,9 @@
 <?php
-namespace Model\User;
-
+namespace App\Model;
+require __DIR__.'/../../vendor/autoload.php';
 use App\Connection\connect;
+use PDO;
 
-$connect = Connection::connect();
 class User
 {
     private $id;
@@ -15,21 +15,41 @@ class User
     private $rolename;
 
     public static function creatUser($username, $fullname, $phone, $email, $password)
-    {
-        try{
-        global $connect;
+{
+    try {
+        $connect = Connect::connection();
         $hashpassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO users (username , fullname , phone , email , password)
-        values (:username , :fullname , :phone , :email , :password)";
+
+        $sql = "INSERT INTO users (username, fullname, phone, email, password)
+                VALUES (:username, :fullname, :phone, :email, :password)";
         $stmt = $connect->prepare($sql);
+
         if ($stmt) {
-            $stmt->execute([':username ' => $username, ':fullname' => $fullname, ':phone' => $phone,
-                ':email' => $email, ':password' => $hashpassword]);
-        }else{
-            echo"error : ".errorInfo();
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':fullname', $fullname);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $hashpassword);
+
+            $stmt->execute();
+
+    
+            $id = $connect->lastInsertId();
+
+            $sqlrole = "INSERT INTO user_role (user_id) VALUES (:id)";
+            $stmtrole = $connect->prepare($sqlrole);
+
+            if ($stmtrole) {
+                $stmtrole->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmtrole->execute();
+            } else {
+                echo "Error preparing SQL statement for user role.";
+            }
+        } else {
+            echo "Error preparing SQL statement for user.";
         }
-    }catch(PDOExeption $e){
-     echo"error : ".$e->getMessage();
+    } catch (\PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
-    }
+}
 }
