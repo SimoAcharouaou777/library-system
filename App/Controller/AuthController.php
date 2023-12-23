@@ -1,14 +1,15 @@
 <?php
 namespace App\Controller;
 
-require __DIR__.'/../../vendor/autoload.php';
-
+require __DIR__ . '/../../vendor/autoload.php';
 
 use App\Connection\connect;
 use App\Model\User;
 
-class AuthController {
-    public static function signup() {
+class AuthController
+{
+    public static function signup()
+    {
         $connect = connect::connection();
         $username = $_POST['username'];
         $fullname = $_POST['fullname'];
@@ -20,17 +21,29 @@ class AuthController {
         if (empty($username) || empty($fullname) || empty($phone) || empty($email) ||
             empty($password) || empty($confirmPassword)) {
             echo "All the fields are required ";
-        } elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)){
-            echo"invalid email";
-        }elseif($password!==$confirmPassword){
-            echo"the password doesnt match";
-        }elseif(User::isusername($username)){
-            echo"chose another username";
-        }elseif(User::isemail($email)){
-            echo"chose another email";
-        }else{
-            User::creatUser($username,$fullname,$phone,$email,$password);
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo "invalid email";
+        } elseif ($password !== $confirmPassword) {
+            echo "the password doesnt match";
+        } elseif (User::isusername($username)) {
+            echo "chose another username";
+        } elseif (User::isemail($email)) {
+            echo "chose another email";
+        } else {
+            User::creatUser($username, $fullname, $phone, $email, $password);
+            header("location:../App/views/login.php");
+        }
+    }
+    public static function login()
+    {
+        $connect = connect::connection();
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $user = User::isusername($username);
+        if ($user && password_verify($password, $user['password'])) {
+            header("location:../App/views/signup.php");
+        } else {
+            echo "password or username are not correct";
         }
     }
 }
-?>

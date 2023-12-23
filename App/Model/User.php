@@ -56,12 +56,12 @@ class User
     public static function isusername($username)
     {
         $connect= Connect::connection();
-        $sql="SELECT COUNT(*) FROM users WHERE username = :username";
+        $sql="SELECT * FROM users WHERE username = :username";
         $stmt = $connect->prepare($sql);
         if($stmt){
             $stmt->bindParam(':username',$username);
             $stmt->execute();
-            return $stmt->fetchColumn() > 0;
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         }else{
             echo"error";
         }
@@ -70,14 +70,15 @@ class User
     public static function isemail($email)
     {
         $connect = Connect::connection();
-        $sql="SELECT COUNT(*) FROM users WHERE email = :email";
+        $sql="SELECT * FROM users WHERE email = :email";
         $stmt = $connect->prepare($sql);
         if($stmt){
             $stmt->bindParam(':email',$email);
             $stmt->execute();
-            return $stmt->fetchColumn()>0;
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         }else{
             echo"error";
         }
     }
+  
 }
