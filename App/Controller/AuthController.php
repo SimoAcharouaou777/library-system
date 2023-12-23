@@ -20,8 +20,16 @@ class AuthController {
         if (empty($username) || empty($fullname) || empty($phone) || empty($email) ||
             empty($password) || empty($confirmPassword)) {
             echo "All the fields are required ";
-        } else {
-            User::creatUser($username, $fullname, $phone, $email, $password);
+        } elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)){
+            echo"invalid email";
+        }elseif($password!==$confirmPassword){
+            echo"the password doesnt match";
+        }elseif(User::isusername($username)){
+            echo"chose another username";
+        }elseif(User::isemail($email)){
+            echo"chose another email";
+        }else{
+            User::creatUser($username,$fullname,$phone,$email,$password);
         }
     }
 }
