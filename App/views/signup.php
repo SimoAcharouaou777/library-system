@@ -10,6 +10,7 @@
 
 <div class="min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded shadow-md w-96">
+        <a href="login.Php">Already have an acount</a>
         <h2 class="text-2xl font-semibold mb-6">Sign Up</h2>
 
         <form action="../../public/index.php" method="POST">

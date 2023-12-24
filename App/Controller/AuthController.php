@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+session_start();
 require __DIR__ . '/../../vendor/autoload.php';
 
 use App\Connection\connect;
@@ -39,11 +40,19 @@ class AuthController
         $connect = connect::connection();
         $username = $_POST['username'];
         $password = $_POST['password'];
-        $user = User::isusername($username);
-        if ($user && password_verify($password, $user['password'])) {
-            header("location:../App/views/signup.php");
+        if (empty($username) || empty("$password")) {
+            echo "all the fields are required";
         } else {
-            echo "password or username are not correct";
+            $user = User::isusername($username);
+            if ($user && password_verify($password, $user['password'])) {
+                $_SESSION['rolename'] = User::getuserrole($username);
+
+                $_SESSION['username'] = $username;
+                header("location:../App/views/user/userhome.php");
+            } else {
+                echo "password or username  wrong";
+            }
         }
+
     }
 }

@@ -80,5 +80,32 @@ class User
             echo"error";
         }
     }
-  
+    public static function getuserrole($username)
+    {
+        try {
+            $connect = Connect::connection();
+            $sql =  "SELECT role.name  as role
+                     FROM users 
+                     JOIN user_role ON users.id = user_role.user_id
+                     JOIN role ON user_role.role_id = role.id
+                     WHERE users.username = :username";
+            $stmt = $connect->prepare($sql);
+
+            if ($stmt) {
+                $stmt->bindParam(':username', $username);
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($result) {
+                    return $result['role'];
+                } else {
+                    return null; 
+                }
+            } else {
+                echo "Error preparing SQL statement for user role.";
+            }
+        } catch (\PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
 }
